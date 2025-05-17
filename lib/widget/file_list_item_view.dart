@@ -62,13 +62,18 @@ class FileListItemView extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               );
       }),
-      subtitle: subtitle.isNotEmpty
-          ? Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant),
-            )
-          : null,
+      subtitle: Column(
+        children: [
+          if (thumbnail != null && thumbnail.isNotEmpty)
+            _buildThumbnailViewV2(icon, thumbnail),
+            if (subtitle.isNotEmpty)
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+              ),
+        ],
+      ),
       onTap: onTap,
       onLongPress: onMoreIconButtonTap,
     );
@@ -114,6 +119,24 @@ class FileListItemView extends StatelessWidget {
         fit: BoxFit.cover,
         width: 35,
         height: 35,
+        loadStateChanged: (state) {
+          if (state.extendedImageLoadState == LoadState.failed) {
+            return Image.asset(icon);
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+    ClipRRect _buildThumbnailViewV2(String icon, String thumbnail) {
+    return ClipRRect(
+      // borderRadius: const BorderRadius.all(Radius.circular(4)),
+      child: ExtendedImage.network(
+        thumbnail,
+        fit: BoxFit.fill,
+        width: double.maxFinite,
+        // height: 35,
         loadStateChanged: (state) {
           if (state.extendedImageLoadState == LoadState.failed) {
             return Image.asset(icon);
