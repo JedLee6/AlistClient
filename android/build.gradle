@@ -23,6 +23,15 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+    subprojects {
+    afterEvaluate { project ->
+        if (project.name == 'flutter_document_picker') {
+            android {
+                namespace 'com.mr.flutter.document.picker' // Actual package name from plugin
+            }
+        }
+    }
+}
 }
 subprojects {
     project.evaluationDependsOn(':app')
